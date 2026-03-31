@@ -1,0 +1,59 @@
+.welcome-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.welcome-shell--doctor {
+  background: linear-gradient(135deg, #eefcf2 0%, #d9f5e2 100%);
+}
+
+.welcome-shell--receptionist {
+  background: linear-gradient(135deg, #edf8ff 0%, #d7efff 100%);
+}
+
+.welcome-card {
+  width: min(100%, 560px);
+  padding: 40px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 60px rgba(31, 74, 113, 0.12);
+  text-align: center;
+}
+
+.welcome-badge {
+  display: inline-flex;
+  margin-bottom: 20px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(31, 121, 184, 0.1);
+  color: #1f79b8;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.welcome-card h1 {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 6vw, 3rem);
+}
+
+.welcome-card p {
+  margin: 0 0 24px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+.welcome-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  border-radius: 16px;
+  background: #1f79b8;
+  color: var(--color-white);
+  font-weight: 700;
+}
