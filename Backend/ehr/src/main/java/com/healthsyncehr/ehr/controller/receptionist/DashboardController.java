@@ -1,5 +1,4 @@
 package com.healthsyncehr.ehr.controller.receptionist;
-
 import com.healthsyncehr.ehr.controller.Doctor.DoctorDashboardController;
 import com.healthsyncehr.ehr.entity.appentity.Patient;
 import com.healthsyncehr.ehr.entity.appentity.PatientStatus;
@@ -50,6 +49,7 @@ public class DashboardController {
     }
 
     @GetMapping("/patients/by-date")
+    @Operation(summary = "this api is use to get patients by the dates")
     public List<Patient> getPatientsByDate(@RequestParam LocalDate date) {
         return receptionistDashboardService.getPatientsByDate(date);
     }

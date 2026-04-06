@@ -1,5 +1,9 @@
-package com.healthsyncehr.ehr.entity.Doctor;
+package com.healthsyncehr.ehr.entity.Doctor.Prescription;
 
+import com.healthsyncehr.ehr.entity.Doctor.Dosages;
+import com.healthsyncehr.ehr.entity.Doctor.Durations;
+import com.healthsyncehr.ehr.entity.Doctor.Frequencies;
+import com.healthsyncehr.ehr.entity.Doctor.Medicines;
 import jakarta.persistence.*;
 import lombok.Data;
 

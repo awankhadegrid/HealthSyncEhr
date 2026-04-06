@@ -9,6 +9,8 @@ const ROLE_CONTENT = {
     subtitle: 'Access appointments, patient registration, and front-desk workflows.',
     emailPlaceholder: 'reception@healthsync.com',
     helper: 'Use your front-desk account to continue into HealthSync.',
+    route: '/receptionist/dashboard',
+    buttonLabel: 'Receptionist',
   },
   doctor: {
     badge: 'DR',
@@ -16,6 +18,17 @@ const ROLE_CONTENT = {
     subtitle: 'Review consultations, patient history, and daily clinical tasks.',
     emailPlaceholder: 'doctor@healthsync.com',
     helper: 'Use your clinician account to securely enter the EHR dashboard.',
+    route: '/doctor/dashboard',
+    buttonLabel: 'Doctor',
+  },
+  pharmacy: {
+    badge: 'PH',
+    title: 'Pharmacy Login',
+    subtitle: 'Manage prescriptions, medicines, and dispensing workflows securely.',
+    emailPlaceholder: 'pharmacy@healthsync.com',
+    helper: 'Use your pharmacy account to access medicine and dispensing operations.',
+    route: '/pharmacy/dashboard',
+    buttonLabel: 'Pharmacy',
   },
 };
 
@@ -75,14 +88,9 @@ function LoginForm() {
       localStorage.setItem('userRole', selectedRole);
       localStorage.setItem('userData', JSON.stringify(user));
 
-      navigate(
-        selectedRole === 'doctor'
-          ? '/doctor/dashboard'
-          : '/receptionist/dashboard',
-        {
-          state: { user },
-        }
-      );
+      navigate(activeRole.route, {
+        state: { user },
+      });
     } catch (error) {
       setErrorMessage(
         error.response?.data?.message ||
@@ -118,6 +126,13 @@ function LoginForm() {
             onClick={() => handleRoleChange('doctor')}
           >
             Doctor
+          </button>
+          <button
+            className={`role-switcher__button ${selectedRole === 'pharmacy' ? 'is-active' : ''}`}
+            type="button"
+            onClick={() => handleRoleChange('pharmacy')}
+          >
+            Pharmacy
           </button>
         </div>
 
@@ -172,7 +187,7 @@ function LoginForm() {
           <button className="primary-button" type="submit" disabled={isSubmitting}>
             {isSubmitting
               ? 'Signing in...'
-              : `Sign in as ${selectedRole === 'doctor' ? 'Doctor' : 'Receptionist'}`}
+              : `Sign in as ${activeRole.buttonLabel}`}
           </button>
         </form>
 

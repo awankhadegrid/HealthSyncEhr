@@ -18,5 +18,6 @@ public interface PatientRepository extends JpaRepository<Patient,Long> {
     @Query("SELECT p FROM Patient p WHERE DATE(p.createdAt) = :date")
     List<Patient> findByCreatedAtDate(@Param("date") LocalDate date);
 
+    List<Patient> findByStatus(PatientStatus status);
 
 }

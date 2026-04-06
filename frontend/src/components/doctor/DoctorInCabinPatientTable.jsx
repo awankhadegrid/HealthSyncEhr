@@ -1,4 +1,4 @@
-function DoctorInCabinPatientTable({ patients, isLoading }) {
+function DoctorInCabinPatientTable({ patients, isLoading, onSelectPatient }) {
   return (
     <section className="panel-card panel-card--wide">
       <div className="panel-section__header">
@@ -13,6 +13,7 @@ function DoctorInCabinPatientTable({ patients, isLoading }) {
           <span>Phone</span>
           <span>Gender</span>
           <span>DOB</span>
+          <span>Summary</span>
         </div>
 
         {isLoading ? (
@@ -28,12 +29,22 @@ function DoctorInCabinPatientTable({ patients, isLoading }) {
               <div
                 key={patient.patientId}
                 className="patient-table__row patient-table__row--doctor"
+                role="button"
+                tabIndex={0}
+                onClick={() => onSelectPatient(patient)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    onSelectPatient(patient);
+                  }
+                }}
               >
                 <span>{patient.patientId}</span>
                 <span>{patient.firstName} {patient.lastName}</span>
                 <span>{patient.phone || 'Not added'}</span>
                 <span>{patient.gender || 'Not added'}</span>
                 <span>{patient.dateOfBirth || 'Not added'}</span>
+                <span className="doctor-table__link">Open summary</span>
               </div>
             ))
           : null}

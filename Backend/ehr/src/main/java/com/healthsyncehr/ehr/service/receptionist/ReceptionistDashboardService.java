@@ -2,16 +2,13 @@ package com.healthsyncehr.ehr.service.receptionist;
 
 import com.healthsyncehr.ehr.entity.appentity.Patient;
 import com.healthsyncehr.ehr.entity.appentity.PatientStatus;
-import com.healthsyncehr.ehr.repository.login.ReceptionistRepository;
 import com.healthsyncehr.ehr.repository.receptionist.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReceptionistDashboardService {

@@ -9,6 +9,10 @@
   background: linear-gradient(135deg, #eefaf2 0%, #f7fcf8 100%);
 }
 
+.pharmacy-panel-shell {
+  background: linear-gradient(135deg, #fff7ec 0%, #fffdf8 100%);
+}
+
 .panel-sidebar {
   padding: 28px 20px;
   background: linear-gradient(180deg, #0f4d78 0%, #1f79b8 100%);
@@ -17,6 +21,10 @@
 
 .doctor-panel-sidebar {
   background: linear-gradient(180deg, #4a9b68 0%, #79c08d 100%);
+}
+
+.pharmacy-panel-sidebar {
+  background: linear-gradient(180deg, #9d6722 0%, #d39a49 100%);
 }
 
 .panel-sidebar__brand {
@@ -141,17 +149,34 @@
   box-shadow: 0 20px 45px rgba(72, 132, 92, 0.1);
 }
 
+.pharmacy-panel-content .panel-card {
+  box-shadow: 0 20px 45px rgba(146, 99, 30, 0.1);
+}
+
 .doctor-panel-topbar__user {
   background: rgba(255, 255, 255, 0.86);
+}
+
+.pharmacy-panel-topbar__user {
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .doctor-panel-topbar__avatar {
   background: linear-gradient(135deg, #68b884, #4d9c6a);
 }
 
+.pharmacy-panel-topbar__avatar {
+  background: linear-gradient(135deg, #d5a358, #a56d21);
+}
+
 .doctor-panel-content .panel-section__header span {
   background: #eaf8ef;
   color: #397b50;
+}
+
+.pharmacy-panel-content .panel-section__header span {
+  background: #fff2de;
+  color: #9a6522;
 }
 
 .doctor-panel-content .panel-card__value,
@@ -160,6 +185,14 @@
 .doctor-panel-content .panel-section__copy,
 .doctor-panel-content .panel-card__label {
   color: #1f3d29;
+}
+
+.pharmacy-panel-content .panel-card__value,
+.pharmacy-panel-content .panel-topbar h2,
+.pharmacy-panel-content .panel-section__header h3,
+.pharmacy-panel-content .panel-section__copy,
+.pharmacy-panel-content .panel-card__label {
+  color: #513516;
 }
 
 .panel-topbar__user {
@@ -304,8 +337,31 @@
 
 .patient-table__head--doctor,
 .patient-table__row--doctor {
-  grid-template-columns: 0.8fr 1.3fr 1fr 0.8fr 1fr;
+  grid-template-columns: 0.8fr 1.2fr 1fr 0.8fr 1fr 0.9fr;
   align-items: center;
+}
+
+.patient-table__head--pharmacy,
+.patient-table__row--pharmacy {
+  grid-template-columns: 0.8fr 1.25fr 1fr 0.8fr 0.9fr;
+  align-items: center;
+}
+
+.patient-table__row--doctor {
+  cursor: pointer;
+}
+
+.patient-table__row--doctor:hover {
+  background: #f6fbf8;
+}
+
+.doctor-table__link {
+  color: #397b50;
+  font-weight: 700;
+}
+
+.patient-status--pharmacy {
+  color: #9a6522;
 }
 
 .patient-table__empty {
@@ -341,6 +397,234 @@
 
 .patients-toolbar__filter {
   min-width: 220px;
+}
+
+.doctor-summary-card {
+  display: grid;
+  gap: 20px;
+}
+
+.doctor-summary__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.doctor-summary__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.doctor-summary__eyebrow {
+  margin: 0 0 6px;
+  color: #4d9c6a;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.doctor-summary__header h3 {
+  margin: 0;
+  font-size: 1.9rem;
+  color: #1f3d29;
+}
+
+.doctor-summary__back {
+  text-decoration: none;
+}
+
+.doctor-summary__history-button {
+  background: #edf8f0;
+  color: #2f7146;
+  border-color: #cfe4d5;
+}
+
+.doctor-summary__history-button:hover {
+  background: #e3f3e8;
+  border-color: #bdd7c6;
+}
+
+.doctor-patient-overview {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.doctor-patient-overview__item {
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #f5fbf7;
+  border: 1px solid #d9eadf;
+}
+
+.doctor-patient-overview__item span,
+.prescription-sheet__meta span,
+.prescription-sheet__patient span,
+.prescription-sheet__footer span {
+  display: block;
+  margin-bottom: 8px;
+  color: #65806f;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.doctor-patient-overview__item strong,
+.prescription-sheet__meta strong,
+.prescription-sheet__patient strong,
+.prescription-sheet__footer strong {
+  color: #1f3d29;
+}
+
+.doctor-summary-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.05fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.doctor-prescription-form,
+.doctor-prescription-preview-card {
+  height: 100%;
+}
+
+.doctor-prescription-form-card,
+.doctor-prescription-preview-card {
+  display: grid;
+  gap: 18px;
+}
+
+.doctor-prescription-preview__header {
+  align-items: center;
+}
+
+.doctor-prescription-preview__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.doctor-prescription-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.doctor-prescription-form__full {
+  grid-column: 1 / -1;
+}
+
+.doctor-prescription-form__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.doctor-add-medicine-button {
+  background: linear-gradient(135deg, #66b983 0%, #4d9c6a 100%);
+  border: 1px solid #4d9c6a;
+  box-shadow: 0 16px 28px rgba(77, 156, 106, 0.24);
+}
+
+.doctor-add-medicine-button:hover {
+  background: linear-gradient(135deg, #74c790 0%, #58aa74 100%);
+}
+
+.doctor-print-button {
+  background: linear-gradient(135deg, #3f8f5b 0%, #2f7146 100%);
+  border: 1px solid #2f7146;
+  box-shadow: 0 14px 26px rgba(47, 113, 70, 0.2);
+}
+
+.doctor-print-button:hover {
+  background: linear-gradient(135deg, #4ca46a 0%, #3a8654 100%);
+}
+
+.prescription-sheet {
+  display: grid;
+  gap: 22px;
+  min-height: 100%;
+  padding: 26px;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(240, 251, 243, 0.94) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border: 1px solid #d8eadf;
+}
+
+.prescription-sheet__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.prescription-sheet__header h4 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #1f3d29;
+}
+
+.prescription-sheet__header p {
+  margin: 6px 0 0;
+  color: #65806f;
+}
+
+.prescription-sheet__patient {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px dashed #bad5c3;
+  border-bottom: 1px dashed #bad5c3;
+}
+
+.prescription-sheet__table {
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid #d8eadf;
+}
+
+.prescription-sheet__row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 1fr 0.9fr;
+  gap: 14px;
+  padding: 16px 18px;
+  background: #ffffff;
+  color: #355241;
+}
+
+.prescription-sheet__row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.55;
+}
+
+.prescription-sheet__row + .prescription-sheet__row {
+  border-top: 1px solid #e5f1e9;
+}
+
+.prescription-sheet__row--head {
+  background: #eef8f1;
+  color: #1f3d29;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.prescription-sheet__row--head span {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.prescription-sheet__empty {
+  padding: 24px 18px;
+  background: #ffffff;
+  color: #65806f;
+  text-align: center;
+  border-top: 1px solid #e5f1e9;
 }
 
 .panel-action-button {
@@ -523,6 +807,93 @@
   gap: 18px;
 }
 
+.doctor-history-modal {
+  width: min(100%, 1040px);
+}
+
+.doctor-history-list {
+  display: grid;
+  gap: 18px;
+}
+
+.doctor-history-card {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 22px;
+  background: #f8fcf9;
+  border: 1px solid #dbe9df;
+}
+
+.doctor-history-card__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.doctor-history-card__eyebrow {
+  margin: 0 0 6px;
+  color: #5d8169;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.doctor-history-card__header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1f3d29;
+}
+
+.doctor-history-card__date {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #edf8f0;
+  color: #2f7146;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.doctor-history-table {
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+}
+
+.doctor-history-table__head,
+.doctor-history-table__row {
+  display: grid;
+  grid-template-columns: 1.25fr 0.9fr 1fr 0.9fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.doctor-history-table__head {
+  padding: 16px 18px;
+  background: #eef8f1;
+  color: #1f3d29;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.doctor-history-table__row {
+  padding: 16px 18px;
+  background: #ffffff;
+  color: #355241;
+  border-top: 1px solid #e5f1e9;
+}
+
+.doctor-history-table__empty {
+  padding: 24px 18px;
+  text-align: center;
+  color: #65806f;
+  background: #ffffff;
+  border-top: 1px solid #e5f1e9;
+}
+
 .patient-match-card {
   display: flex;
   align-items: center;
@@ -578,7 +949,8 @@
   .panel-topbar__right,
   .patient-modal__lookup,
   .patient-match-card,
-  .patients-toolbar {
+  .patients-toolbar,
+  .doctor-summary__actions {
     width: 100%;
     grid-template-columns: 1fr;
     flex-direction: column;
@@ -589,7 +961,14 @@
   .panel-list__item,
   .patient-table__head,
   .patient-table__row,
-  .patient-form-grid {
+  .patient-form-grid,
+  .doctor-summary-grid,
+  .doctor-patient-overview,
+  .doctor-prescription-form,
+  .prescription-sheet__patient,
+  .prescription-sheet__row,
+  .doctor-history-table__head,
+  .doctor-history-table__row {
     grid-template-columns: 1fr;
   }
 }

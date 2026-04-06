@@ -3,6 +3,7 @@ import api from './api';
 const LOGIN_ENDPOINTS = {
   receptionist: '/api/auth/receptionist/login',
   doctor: '/api/auth/doctor/login',
+  pharmacy: '/api/auth/pharmacy/login',
 };
 
 export async function loginByRole(role, payload) {

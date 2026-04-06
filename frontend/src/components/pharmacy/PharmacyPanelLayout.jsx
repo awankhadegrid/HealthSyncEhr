@@ -1,23 +1,23 @@
 import { NavLink } from 'react-router-dom';
 import '../../styles/panel-layout.css';
 
-function DoctorPanelLayout({ heading, userName, children }) {
+function PharmacyPanelLayout({ heading, userName, children }) {
   const navItems = [
-    { to: '/doctor/dashboard', label: 'Dashboard', icon: 'DB' },
+    { to: '/pharmacy/dashboard', label: 'Dashboard', icon: 'DB' },
   ];
 
   return (
-    <main className="panel-shell doctor-panel-shell">
-      <aside className="panel-sidebar doctor-panel-sidebar">
+    <main className="panel-shell pharmacy-panel-shell">
+      <aside className="panel-sidebar pharmacy-panel-sidebar">
         <div className="panel-sidebar__brand">
           <div className="panel-sidebar__badge">HS</div>
           <div>
-            <h1>Doctor Panel</h1>
-            <p>Clinical workspace</p>
+            <h1>Pharmacy Panel</h1>
+            <p>Dispensing workspace</p>
           </div>
         </div>
 
-        <nav className="panel-sidebar__nav" aria-label="Doctor navigation">
+        <nav className="panel-sidebar__nav" aria-label="Pharmacy navigation">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -33,20 +33,20 @@ function DoctorPanelLayout({ heading, userName, children }) {
         </nav>
       </aside>
 
-      <section className="panel-content doctor-panel-content">
-        <header className="panel-topbar doctor-panel-topbar">
+      <section className="panel-content pharmacy-panel-content">
+        <header className="panel-topbar pharmacy-panel-topbar">
           <div>
             <p className="panel-topbar__eyebrow">Welcome</p>
             <h2>{heading}</h2>
           </div>
 
-          <div className="panel-topbar__user doctor-panel-topbar__user">
-            <span className="panel-topbar__avatar doctor-panel-topbar__avatar">
+          <div className="panel-topbar__user pharmacy-panel-topbar__user">
+            <span className="panel-topbar__avatar pharmacy-panel-topbar__avatar">
               {userName.slice(0, 1).toUpperCase()}
             </span>
             <div>
               <strong>{userName}</strong>
-              <p>Doctor</p>
+              <p>Pharmacy</p>
             </div>
           </div>
         </header>
@@ -57,4 +57,4 @@ function DoctorPanelLayout({ heading, userName, children }) {
   );
 }
 
-export default DoctorPanelLayout;
+export default PharmacyPanelLayout;

@@ -1,4 +1,4 @@
-package com.healthsyncehr.ehr.entity.Doctor;
+package com.healthsyncehr.ehr.entity.Doctor.Prescription;
 
 import com.healthsyncehr.ehr.entity.appentity.Patient;
 import jakarta.persistence.*;
@@ -22,7 +22,7 @@ public class Prescription {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "prescription")
+    @OneToMany(mappedBy = "prescription",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PrescriptionItem> items;
 
 

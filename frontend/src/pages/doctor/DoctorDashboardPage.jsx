@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import DoctorInCabinPatientTable from '../../components/doctor/DoctorInCabinPatientTable.jsx';
 import DoctorPanelLayout from '../../components/doctor/DoctorPanelLayout.jsx';
 import { getInCabinPatients } from '../../services/doctorPatientService.js';
@@ -18,6 +18,7 @@ function normalizePatients(payload) {
 
 function DoctorDashboardPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem('userData') || 'null');
   const userName = location.state?.user?.name || storedUser?.name || 'Doctor';
   const [patients, setPatients] = useState([]);
@@ -73,7 +74,15 @@ function DoctorDashboardPage() {
   return (
     <DoctorPanelLayout heading="Doctor Dashboard" userName={userName}>
       {pageError ? <p className="form-error">{pageError}</p> : null}
-      <DoctorInCabinPatientTable patients={patients} isLoading={isLoading} />
+      <DoctorInCabinPatientTable
+        patients={patients}
+        isLoading={isLoading}
+        onSelectPatient={(patient) =>
+          navigate(`/doctor/patients/${patient.patientId}/summary`, {
+            state: { patient, user: { name: userName } },
+          })
+        }
+      />
     </DoctorPanelLayout>
   );
 }
