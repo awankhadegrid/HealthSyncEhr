@@ -6,12 +6,11 @@ import com.healthsyncehr.ehr.repository.receptionist.PatientRepository;
 import com.healthsyncehr.ehr.service.pharmacist.PharmacyDashBoardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.Description;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pharmacy")
@@ -26,4 +25,15 @@ public class PharmacyDashboardController {
     public List<Patient> getPatientByStatus() {
         return pharmacyDashBoardService.getPatientByStatus();
     }
+
+    @GetMapping("/patients/{patientId}/latest-prescription")
+    public Map<String,Object> getLatestPrescription(@PathVariable Long patientId){
+        return pharmacyDashBoardService.getLatestPrescription(patientId);
+    }
+
+    @PatchMapping("/patients/{patientId}/status")
+    public Patient changeStatusToDone(@PathVariable Long patientId){
+        return pharmacyDashBoardService.changeStatusToDone(patientId);
+    }
+
 }

@@ -4,6 +4,8 @@ import '../../styles/panel-layout.css';
 function PharmacyPanelLayout({ heading, userName, children }) {
   const navItems = [
     { to: '/pharmacy/dashboard', label: 'Dashboard', icon: 'DB' },
+    { to: '/pharmacy/medicine-master', label: 'Medicine Master', icon: 'MM' },
+    { to: '/pharmacy/medicine-store', label: 'Medicine Store', icon: 'MS' },
   ];
 
   return (

@@ -91,13 +91,15 @@ function DoctorPrescriptionHistoryModal({
                     </span>
                   </header>
 
-                  <div className="doctor-history-table">
-                    <div className="doctor-history-table__head">
-                      <span>Medicine</span>
-                      <span>Dosage</span>
-                      <span>Frequency</span>
-                      <span>Duration</span>
-                    </div>
+                    <div className="doctor-history-table">
+                      <div className="doctor-history-table__head">
+                        <span>Medicine</span>
+                        <span>Type</span>
+                        <span>Qty</span>
+                        <span>Dosage</span>
+                        <span>Frequency</span>
+                        <span>Duration</span>
+                      </div>
 
                     {Array.isArray(entry.items) && entry.items.length > 0 ? (
                       entry.items.map((item, index) => (
@@ -107,6 +109,12 @@ function DoctorPrescriptionHistoryModal({
                         >
                           <span>
                             {item.medicineName || item.medicine?.medicineName || 'Medicine'}
+                          </span>
+                          <span>
+                            {item.medicineType || item.medicine_type || item.type || 'Not added'}
+                          </span>
+                          <span>
+                            {item.quantity || item.Quantity || 'Not added'}
                           </span>
                           <span>
                             {item.dosageValue || item.dosage?.dosageValue || item.dosage || 'Not added'}

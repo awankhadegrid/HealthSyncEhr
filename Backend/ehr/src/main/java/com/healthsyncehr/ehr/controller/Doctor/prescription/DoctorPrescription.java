@@ -31,6 +31,7 @@ public class DoctorPrescription {
 
 
     @GetMapping("/patients/{patientId}/previousPrescriptions")
+    @Operation(summary = "this api is use for the return previous all prescription for the doctor dashboard")
     public List<Map<String,Object>> getPreviousPrescriptions(@PathVariable Long patientId){
         return prescriptionServices.getPreviousPrescriptions(patientId);
     }

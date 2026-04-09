@@ -1,4 +1,7 @@
 package com.healthsyncehr.ehr.repository.pharmacy;
 
-public interface PharmacyStoreRepo {
+import com.healthsyncehr.ehr.medicineStore.MedicineStoreEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PharmacyStoreRepo extends JpaRepository<MedicineStoreEntity, Long> {
 }

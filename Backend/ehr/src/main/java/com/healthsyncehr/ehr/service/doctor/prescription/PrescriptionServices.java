@@ -3,7 +3,6 @@ package com.healthsyncehr.ehr.service.doctor.prescription;
 import com.healthsyncehr.ehr.entity.Doctor.Dosages;
 import com.healthsyncehr.ehr.entity.Doctor.Durations;
 import com.healthsyncehr.ehr.entity.Doctor.Frequencies;
-import com.healthsyncehr.ehr.entity.Doctor.Medicines;
 import com.healthsyncehr.ehr.entity.Doctor.Prescription.Prescription;
 import com.healthsyncehr.ehr.entity.Doctor.Prescription.PrescriptionItem;
 import com.healthsyncehr.ehr.entity.appentity.Patient;
@@ -11,7 +10,6 @@ import com.healthsyncehr.ehr.entity.appentity.PatientStatus;
 import com.healthsyncehr.ehr.repository.Doctor.DosagesRepo;
 import com.healthsyncehr.ehr.repository.Doctor.DurationsRepo;
 import com.healthsyncehr.ehr.repository.Doctor.FrequenciesRepo;
-import com.healthsyncehr.ehr.repository.Doctor.MedicinesRepo;
 import com.healthsyncehr.ehr.repository.Doctor.prescription.PrescriptionRepo;
 import com.healthsyncehr.ehr.repository.receptionist.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,33 +29,31 @@ public class PrescriptionServices {
     @Autowired
     DurationsRepo durationsRepo;
     @Autowired
-    MedicinesRepo medicinesRepo;
-    @Autowired
     PrescriptionRepo prescriptionRepo;
-
 
     public Map<String,Object> savePrescription(Long patientId, Map<String, Object> request) {
 
         Prescription prescription = new Prescription();
 
-        Patient patient = patientRepository.findById(patientId).orElseThrow(()->new RuntimeException("patient not found"));
+        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new RuntimeException("patient not found"));
         prescription.setPatient(patient);
         patient.setStatus(PatientStatus.PRESCRIBED);
 
         prescription.setCreatedAt(LocalDateTime.now());
         patient.setUpdatedAt(LocalDateTime.now());
+        int totalBill = 0;
         List<PrescriptionItem> items = new ArrayList<>();
 
         List<Map<String, Object>> requestItems = (List<Map<String, Object>>) request.get("items");
 
         for (Map<String, Object> itemRequest : requestItems) {
-            Long medicineId = Long.valueOf(itemRequest.get("medicineId").toString());
+            String drugName = itemRequest.get("drugName").toString().trim();
             Long dosageId = Long.valueOf(itemRequest.get("dosageId").toString());
             Long frequencyId = Long.valueOf(itemRequest.get("frequencyId").toString());
             Long durationId = Long.valueOf(itemRequest.get("durationId").toString());
-
-            Medicines medicine = medicinesRepo.findById(medicineId)
-                    .orElseThrow(() -> new RuntimeException("Medicine not found"));
+            String medicineType = itemRequest.get("medicineType").toString();
+            Integer quantity = Integer.valueOf(itemRequest.get("quantity").toString());
+            Integer pricePerMedicine = Integer.valueOf(itemRequest.getOrDefault("pricePerMedicine", 0).toString());
 
             Dosages dosage = dosagesRepo.findById(dosageId)
                     .orElseThrow(() -> new RuntimeException("Dosage not found"));
@@ -70,40 +66,51 @@ public class PrescriptionServices {
 
             PrescriptionItem item = new PrescriptionItem();
             item.setPrescription(prescription);
-            item.setMedicine(medicine);
+            item.setDrugName(drugName);
             item.setDosage(dosage);
             item.setFrequency(frequency);
             item.setDuration(duration);
+            item.setMedicineType(medicineType);
+            item.setQuantity(quantity);
+            item.setPricePerMedicine(pricePerMedicine);
+            totalBill += pricePerMedicine;
 
             items.add(item);
         }
         prescription.setItems(items);
+        prescription.setTotalBill(totalBill);
 
         Prescription savedPrescription = prescriptionRepo.save(prescription);
+        patientRepository.save(patient);
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("message", "Prescription saved successfully");
         response.put("prescriptionId", savedPrescription.getPrescriptionId());
+        response.put("totalBill", savedPrescription.getTotalBill());
         return response;
     }
 
     public List<Map<String, Object>> getPreviousPrescriptions(Long patientId) {
-        List<Prescription> prescriptions = prescriptionRepo.findByPatientPatientId(patientId);
+        List<Prescription> prescriptions = prescriptionRepo.findByPatientPatientIdOrderByCreatedAtDesc(patientId);
         List<Map<String,Object>> response = new ArrayList<>();
         for (Prescription prescription : prescriptions) {
             Map<String, Object> prescriptionMap = new HashMap<>();
             prescriptionMap.put("prescriptionId", prescription.getPrescriptionId());
             prescriptionMap.put("createdAt", prescription.getCreatedAt());
+            prescriptionMap.put("totalBill", prescription.getTotalBill());
 
             List<Map<String, Object>> items = new ArrayList<>();
 
             for (PrescriptionItem item : prescription.getItems()) {
                 Map<String, Object> itemMap = new HashMap<>();
-                itemMap.put("medicineName", item.getMedicine().getMedicineName());
+                itemMap.put("medicineName", item.getDrugName());
+                itemMap.put("medicineType", item.getMedicineType());
+                itemMap.put("quantity", item.getQuantity());
                 itemMap.put("dosageValue", item.getDosage().getDosageValue());
                 itemMap.put("frequencyValue", item.getFrequency().getFrequency());
                 itemMap.put("durationValue", item.getDuration().getDuration());
+                itemMap.put("pricePerMedicine", item.getPricePerMedicine());
 
                 items.add(itemMap);
             }
@@ -112,6 +119,5 @@ public class PrescriptionServices {
             response.add(prescriptionMap);
         }
         return response;
-
     }
 }

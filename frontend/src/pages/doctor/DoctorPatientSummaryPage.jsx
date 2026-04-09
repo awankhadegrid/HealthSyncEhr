@@ -9,10 +9,12 @@ import {
 } from '../../services/doctorPrescriptionService.js';
 
 const INITIAL_PRESCRIPTION = {
-  medicineId: '',
+  drugName: '',
+  medicineType: '',
   dosageId: '',
   frequencyId: '',
   durationId: '',
+  quantity: '',
 };
 
 const MEDICINE_OPTIONS = [
@@ -43,6 +45,25 @@ const DURATION_OPTIONS = [
   { id: 4, label: '10 days' },
 ];
 
+const MEDICINE_TYPE_OPTIONS = [
+  { id: 'TABLET', label: 'Tablet' },
+  { id: 'CAPSULE', label: 'Capsule' },
+  { id: 'SYRUP', label: 'Syrup' },
+  { id: 'DROPS', label: 'Drops' },
+  { id: 'INJECTION', label: 'Injection' },
+  { id: 'CREAM', label: 'Cream' },
+  { id: 'OINTMENT', label: 'Ointment' },
+  { id: 'GEL', label: 'Gel' },
+  { id: 'INHALER', label: 'Inhaler' },
+  { id: 'SPRAY', label: 'Spray' },
+  { id: 'POWDER', label: 'Powder' },
+];
+
+const QUANTITY_OPTIONS = Array.from({ length: 20 }, (_, index) => ({
+  id: String(index + 1),
+  label: String(index + 1),
+}));
+
 function normalizeOption(option, config) {
   if (typeof option === 'string') {
     return {
@@ -51,9 +72,20 @@ function normalizeOption(option, config) {
     };
   }
 
+  const resolvedLabel =
+    (Array.isArray(config.labelKeys)
+      ? config.labelKeys.find((key) => option?.[key])
+      : null) || config.labelKey;
+
   return {
     id: String(option?.[config.idKey] ?? option?.id ?? ''),
-    label: option?.[config.labelKey] ?? option?.label ?? '',
+    label: option?.[resolvedLabel] ?? option?.label ?? '',
+    meta: config.metaKeys
+      ? config.metaKeys.reduce((accumulator, key) => {
+          accumulator[key] = option?.[key];
+          return accumulator;
+        }, {})
+      : {},
   };
 }
 
@@ -62,6 +94,7 @@ function normalizeOptionGroup(options, fallbackOptions, config) {
     return fallbackOptions.map((option) => ({
       id: String(option.id),
       label: option.label,
+      meta: option.meta || {},
     }));
   }
 
@@ -74,6 +107,16 @@ function findSelectedOption(options, selectedId) {
   return options.find((option) => option.id === selectedId) || null;
 }
 
+function findDrugByName(options, drugName) {
+  const normalizedName = drugName.trim().toLowerCase();
+
+  return (
+    options.find(
+      (option) => option.label.trim().toLowerCase() === normalizedName
+    ) || null
+  );
+}
+
 function DoctorPatientSummaryPage() {
   const location = useLocation();
   const { patientId } = useParams();
@@ -84,9 +127,11 @@ function DoctorPatientSummaryPage() {
   const [prescriptionItems, setPrescriptionItems] = useState([]);
   const [prescriptionOptions, setPrescriptionOptions] = useState({
     medicines: MEDICINE_OPTIONS,
+    medicineTypes: MEDICINE_TYPE_OPTIONS,
     dosages: DOSAGE_OPTIONS,
     frequencies: FREQUENCY_OPTIONS,
     durations: DURATION_OPTIONS,
+    quantities: QUANTITY_OPTIONS,
   });
   const [saveError, setSaveError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -94,6 +139,7 @@ function DoctorPatientSummaryPage() {
   const [historyData, setHistoryData] = useState([]);
   const [historyError, setHistoryError] = useState('');
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [showMedicineSuggestions, setShowMedicineSuggestions] = useState(false);
 
   const patientSummary = patient || {
     patientId,
@@ -108,6 +154,22 @@ function DoctorPatientSummaryPage() {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
+    if (name === 'drugName') {
+      const matchedMedicine = findDrugByName(
+        prescriptionOptions.medicines,
+        value
+      );
+
+      setShowMedicineSuggestions(true);
+      setPrescriptionForm((currentForm) => ({
+        ...currentForm,
+        drugName: value,
+        medicineType:
+          matchedMedicine?.meta?.medicine_type || currentForm.medicineType,
+      }));
+      return;
+    }
+
     setPrescriptionForm((currentForm) => ({
       ...currentForm,
       [name]: value,
@@ -118,9 +180,10 @@ function DoctorPatientSummaryPage() {
     event.preventDefault();
     setSaveError('');
 
-    const selectedMedicine = findSelectedOption(
+    const drugName = prescriptionForm.drugName.trim();
+    const selectedMedicine = findDrugByName(
       prescriptionOptions.medicines,
-      prescriptionForm.medicineId
+      drugName
     );
     const selectedDosage = findSelectedOption(
       prescriptionOptions.dosages,
@@ -134,33 +197,61 @@ function DoctorPatientSummaryPage() {
       prescriptionOptions.durations,
       prescriptionForm.durationId
     );
+    const selectedMedicineType = findSelectedOption(
+      prescriptionOptions.medicineTypes,
+      prescriptionForm.medicineType
+    );
+    const selectedQuantity = findSelectedOption(
+      prescriptionOptions.quantities,
+      prescriptionForm.quantity
+    );
 
     if (
-      !selectedMedicine ||
+      !drugName ||
+      !selectedMedicineType ||
       !selectedDosage ||
       !selectedFrequency ||
-      !selectedDuration
+      !selectedDuration ||
+      !selectedQuantity
     ) {
-      setSaveError('Select all prescription details before adding medicine.');
+      setSaveError(
+        'Select the medicine from the dropdown suggestions and complete all prescription details before adding it.'
+      );
       return;
     }
+
+    const pricePerQuantity = Number(selectedMedicine?.meta?.pricePerQuantity || 0);
+    const quantity = Number(selectedQuantity.id);
 
     setPrescriptionItems((currentItems) => [
       ...currentItems,
       {
         id: Date.now(),
-        medicineId: selectedMedicine.id,
-        medicineName: selectedMedicine.label,
+        drugName,
+        medicineType: selectedMedicineType.label,
         dosageId: selectedDosage.id,
         dosage: selectedDosage.label,
         frequencyId: selectedFrequency.id,
         frequency: selectedFrequency.label,
         durationId: selectedDuration.id,
         duration: selectedDuration.label,
+        quantity,
+        pricePerQuantity,
+        pricePerMedicine: pricePerQuantity * quantity,
       },
     ]);
 
     setPrescriptionForm(INITIAL_PRESCRIPTION);
+  };
+
+  const handleSelectMedicineSuggestion = (medicineOption) => {
+    setPrescriptionForm((currentForm) => ({
+      ...currentForm,
+      drugName: medicineOption.label,
+      medicineType:
+        medicineOption.meta?.medicine_type || currentForm.medicineType,
+    }));
+    setShowMedicineSuggestions(false);
   };
 
   useEffect(() => {
@@ -178,7 +269,17 @@ function DoctorPatientSummaryPage() {
           medicines: normalizeOptionGroup(
             response?.medicines,
             MEDICINE_OPTIONS,
-            { idKey: 'medicineId', labelKey: 'medicineName' }
+            {
+              idKey: 'medicineId',
+              labelKey: 'medicineName',
+              labelKeys: ['drugName', 'medicineName', 'drungName'],
+              metaKeys: ['medicine_type', 'pricePerQuantity'],
+            }
+          ),
+          medicineTypes: normalizeOptionGroup(
+            response?.medicineTypes,
+            MEDICINE_TYPE_OPTIONS,
+            { idKey: 'id', labelKey: 'label' }
           ),
           dosages: normalizeOptionGroup(
             response?.dosages,
@@ -195,6 +296,11 @@ function DoctorPatientSummaryPage() {
             DURATION_OPTIONS,
             { idKey: 'durationId', labelKey: 'duration' }
           ),
+          quantities: normalizeOptionGroup(
+            response?.quantities,
+            QUANTITY_OPTIONS,
+            { idKey: 'id', labelKey: 'label' }
+          ),
         });
       } catch (error) {
         if (!isMounted) {
@@ -203,9 +309,11 @@ function DoctorPatientSummaryPage() {
 
         setPrescriptionOptions({
           medicines: MEDICINE_OPTIONS,
+          medicineTypes: MEDICINE_TYPE_OPTIONS,
           dosages: DOSAGE_OPTIONS,
           frequencies: FREQUENCY_OPTIONS,
           durations: DURATION_OPTIONS,
+          quantities: QUANTITY_OPTIONS,
         });
       }
     }
@@ -240,10 +348,13 @@ function DoctorPatientSummaryPage() {
     patientId: Number(patientSummary.patientId),
     createdAt: new Date().toISOString(),
     items: prescriptionItems.map((item) => ({
-      medicineId: Number(item.medicineId),
+      drugName: item.drugName,
+      medicineType: item.medicineType,
       dosageId: Number(item.dosageId),
       frequencyId: Number(item.frequencyId),
       durationId: Number(item.durationId),
+      quantity: Number(item.quantity),
+      pricePerMedicine: Number(item.pricePerMedicine || 0),
     })),
   });
 
@@ -271,6 +382,14 @@ function DoctorPatientSummaryPage() {
       setIsSaving(false);
     }
   };
+
+  const filteredMedicineSuggestions = prescriptionOptions.medicines
+    .filter((option) =>
+      option.label
+        .toLowerCase()
+        .includes(prescriptionForm.drugName.trim().toLowerCase())
+    )
+    .slice(0, 6);
 
   return (
     <DoctorPanelLayout heading="Patient Summary" userName={userName}>
@@ -329,16 +448,49 @@ function DoctorPatientSummaryPage() {
           </div>
 
           <form className="doctor-prescription-form" onSubmit={handleAddMedicine}>
-            <label className="input-group" htmlFor="medicineId">
-              <span>Medicine Name</span>
+            <label className="input-group" htmlFor="drugName">
+              <span>Drug Name</span>
+              <input
+                id="drugName"
+                name="drugName"
+                type="text"
+                value={prescriptionForm.drugName}
+                onChange={handleChange}
+                onFocus={() => setShowMedicineSuggestions(true)}
+                onBlur={() => {
+                  setTimeout(() => {
+                    setShowMedicineSuggestions(false);
+                  }, 120);
+                }}
+                placeholder="Search medicine or type new one"
+                autoComplete="off"
+              />
+              {showMedicineSuggestions && filteredMedicineSuggestions.length > 0 ? (
+                <div className="doctor-medicine-suggestions">
+                  {filteredMedicineSuggestions.map((option) => (
+                    <button
+                      key={option.id}
+                      className="doctor-medicine-suggestions__item"
+                      type="button"
+                      onMouseDown={() => handleSelectMedicineSuggestion(option)}
+                    >
+                      <span>{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </label>
+
+            <label className="input-group" htmlFor="medicineType">
+              <span>Type of Medicine</span>
               <select
-                id="medicineId"
-                name="medicineId"
-                value={prescriptionForm.medicineId}
+                id="medicineType"
+                name="medicineType"
+                value={prescriptionForm.medicineType}
                 onChange={handleChange}
               >
-                <option value="">Select medicine</option>
-                {prescriptionOptions.medicines.map((option) => (
+                <option value="">Select type</option>
+                {prescriptionOptions.medicineTypes.map((option) => (
                   <option key={option.id} value={option.id}>
                     {option.label}
                   </option>
@@ -390,6 +542,23 @@ function DoctorPatientSummaryPage() {
               >
                 <option value="">Select duration</option>
                 {prescriptionOptions.durations.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="input-group" htmlFor="quantity">
+              <span>Quantity</span>
+              <select
+                id="quantity"
+                name="quantity"
+                value={prescriptionForm.quantity}
+                onChange={handleChange}
+              >
+                <option value="">Select quantity</option>
+                {prescriptionOptions.quantities.map((option) => (
                   <option key={option.id} value={option.id}>
                     {option.label}
                   </option>
@@ -461,6 +630,8 @@ function DoctorPatientSummaryPage() {
             <section className="prescription-sheet__table">
               <div className="prescription-sheet__row prescription-sheet__row--head">
                 <span>Medicine</span>
+                <span>Type</span>
+                <span>Qty</span>
                 <span>Dosage</span>
                 <span>Frequency</span>
                 <span>Duration</span>
@@ -474,7 +645,9 @@ function DoctorPatientSummaryPage() {
 
               {prescriptionItems.map((item) => (
                 <div key={item.id} className="prescription-sheet__row">
-                  <span>{item.medicineName}</span>
+                  <span>{item.drugName}</span>
+                  <span>{item.medicineType}</span>
+                  <span>{item.quantity}</span>
                   <span>{item.dosage}</span>
                   <span>{item.frequency}</span>
                   <span>{item.duration}</span>

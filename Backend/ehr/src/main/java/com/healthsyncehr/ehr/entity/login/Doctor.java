@@ -8,7 +8,7 @@ import lombok.Data;
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int doctorId;
+    private long doctorId;
 
     @Column(unique = true, nullable = false)
     private String emailId;

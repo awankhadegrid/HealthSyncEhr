@@ -1,4 +1,4 @@
-package com.healthsyncehr.medicineStore;
+package com.healthsyncehr.ehr.medicineStore;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

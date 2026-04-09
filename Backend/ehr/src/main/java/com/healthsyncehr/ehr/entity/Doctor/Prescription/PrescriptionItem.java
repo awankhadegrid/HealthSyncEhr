@@ -3,7 +3,6 @@ package com.healthsyncehr.ehr.entity.Doctor.Prescription;
 import com.healthsyncehr.ehr.entity.Doctor.Dosages;
 import com.healthsyncehr.ehr.entity.Doctor.Durations;
 import com.healthsyncehr.ehr.entity.Doctor.Frequencies;
-import com.healthsyncehr.ehr.entity.Doctor.Medicines;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,9 +18,8 @@ public class PrescriptionItem {
     @JoinColumn(name = "prescription_id", nullable = false)
     private Prescription prescription;
 
-    @ManyToOne
-    @JoinColumn(name = "medicine_id", nullable = false)
-    private Medicines medicine;
+    @Column(nullable = false)
+    private String drugName;
 
     @ManyToOne
     @JoinColumn(name = "dosage_id", nullable = false)
@@ -35,4 +33,9 @@ public class PrescriptionItem {
     @JoinColumn(name = "duration_id", nullable = false)
     private Durations duration;
 
+    private String medicineType;
+
+    private Integer quantity;
+
+    private Integer pricePerMedicine;
 }

@@ -1,4 +1,8 @@
+import { useNavigate } from 'react-router-dom';
+
 function PharmacyPrescribedPatientTable({ patients, isLoading }) {
+  const navigate = useNavigate();
+
   return (
     <section className="panel-card panel-card--wide">
       <div className="panel-section__header">
@@ -30,6 +34,21 @@ function PharmacyPrescribedPatientTable({ patients, isLoading }) {
               <div
                 key={patient.patientId}
                 className="patient-table__row patient-table__row--pharmacy"
+                role="button"
+                tabIndex={0}
+                onClick={() =>
+                  navigate(`/pharmacy/patients/${patient.patientId}`, {
+                    state: { patient },
+                  })
+                }
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    navigate(`/pharmacy/patients/${patient.patientId}`, {
+                      state: { patient },
+                    });
+                  }
+                }}
               >
                 <span>{patient.patientId}</span>
                 <span>{patient.firstName} {patient.lastName}</span>

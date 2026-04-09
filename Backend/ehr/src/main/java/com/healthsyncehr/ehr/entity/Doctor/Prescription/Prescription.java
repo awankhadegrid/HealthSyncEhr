@@ -22,6 +22,8 @@ public class Prescription {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    private Integer totalBill;
+
     @OneToMany(mappedBy = "prescription",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PrescriptionItem> items;
 
