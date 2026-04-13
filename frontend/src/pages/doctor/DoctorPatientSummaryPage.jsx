@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import DoctorLabTestHistoryModal from '../../components/doctor/DoctorLabTestHistoryModal.jsx';
 import DoctorPrescriptionHistoryModal from '../../components/doctor/DoctorPrescriptionHistoryModal.jsx';
 import DoctorPanelLayout from '../../components/doctor/DoctorPanelLayout.jsx';
+import DoctorLabTestPrescriptionForm from '../../components/doctor/DoctorLabTestPrescriptionForm.jsx';
+import DoctorLabTestPreview from '../../components/doctor/DoctorLabTestPreview.jsx';
 import {
+  getPatientPreviousLabTests,
   getPatientPrescriptionHistory,
   getPrescriptionOptions,
   savePatientPrescription,
@@ -125,6 +129,9 @@ function DoctorPatientSummaryPage() {
   const patient = location.state?.patient || null;
   const [prescriptionForm, setPrescriptionForm] = useState(INITIAL_PRESCRIPTION);
   const [prescriptionItems, setPrescriptionItems] = useState([]);
+  const [labTestItems, setLabTestItems] = useState([]);
+  const [labTestSaveError, setLabTestSaveError] = useState('');
+  const [labTestSaveMessage, setLabTestSaveMessage] = useState('');
   const [prescriptionOptions, setPrescriptionOptions] = useState({
     medicines: MEDICINE_OPTIONS,
     medicineTypes: MEDICINE_TYPE_OPTIONS,
@@ -139,6 +146,10 @@ function DoctorPatientSummaryPage() {
   const [historyData, setHistoryData] = useState([]);
   const [historyError, setHistoryError] = useState('');
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [isLabHistoryOpen, setIsLabHistoryOpen] = useState(false);
+  const [labHistoryData, setLabHistoryData] = useState([]);
+  const [labHistoryError, setLabHistoryError] = useState('');
+  const [isLabHistoryLoading, setIsLabHistoryLoading] = useState(false);
   const [showMedicineSuggestions, setShowMedicineSuggestions] = useState(false);
 
   const patientSummary = patient || {
@@ -254,6 +265,14 @@ function DoctorPatientSummaryPage() {
     setShowMedicineSuggestions(false);
   };
 
+  const handleAddLabTest = (testItem) => {
+    setLabTestItems((currentItems) => [...currentItems, testItem]);
+  };
+
+  const handleRemoveLabTest = (id) => {
+    setLabTestItems((currentItems) => currentItems.filter((item) => item.id !== id));
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -344,6 +363,25 @@ function DoctorPatientSummaryPage() {
     }
   };
 
+  const handleOpenLabHistory = async () => {
+    setIsLabHistoryOpen(true);
+    setLabHistoryError('');
+    setIsLabHistoryLoading(true);
+
+    try {
+      const response = await getPatientPreviousLabTests(patientSummary.patientId);
+      setLabHistoryData(response);
+    } catch (error) {
+      setLabHistoryData([]);
+      setLabHistoryError(
+        error.response?.data?.message ||
+          'Unable to load previous lab tests. Check backend API.'
+      );
+    } finally {
+      setIsLabHistoryLoading(false);
+    }
+  };
+
   const buildPrescriptionPayload = () => ({
     patientId: Number(patientSummary.patientId),
     createdAt: new Date().toISOString(),
@@ -409,6 +447,13 @@ function DoctorPatientSummaryPage() {
               onClick={handleOpenHistory}
             >
               Previous prescriptions
+            </button>
+            <button
+              className="secondary-button doctor-summary__history-button"
+              type="button"
+              onClick={handleOpenLabHistory}
+            >
+              Previous lab tests
             </button>
             <Link className="secondary-button doctor-summary__back" to="/doctor/dashboard">
               Back to dashboard
@@ -658,12 +703,55 @@ function DoctorPatientSummaryPage() {
         </section>
       </section>
 
+      {labTestSaveError ? <p className="form-error">{labTestSaveError}</p> : null}
+      {labTestSaveMessage ? <p className="laboratory-form-message">{labTestSaveMessage}</p> : null}
+
+      <section className="panel-card doctor-lab-test-combined-card">
+        <div className="panel-section__header">
+          <h3>Prescribe Lab Test</h3>
+          <span>{labTestItems.length} test(s) added</span>
+        </div>
+
+        <div className="doctor-lab-test-combined-section">
+          <div className="doctor-lab-test-form-section">
+            <h4 className="doctor-lab-test-section-title">Select & Add Test</h4>
+            <DoctorLabTestPrescriptionForm 
+              patientId={patientSummary.patientId}
+              onAddTest={handleAddLabTest}
+            />
+          </div>
+
+          <div className="doctor-lab-test-list-section">
+            <DoctorLabTestPreview 
+              labTestItems={labTestItems}
+              onRemoveTest={handleRemoveLabTest}
+              patientId={patientSummary.patientId}
+              onSaveSuccess={(message) => {
+                setLabTestSaveMessage(message);
+                setLabTestSaveError('');
+              }}
+              onSaveError={(error) => {
+                setLabTestSaveError(error);
+                setLabTestSaveMessage('');
+              }}
+            />
+          </div>
+        </div>
+      </section>
+
       <DoctorPrescriptionHistoryModal
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
         historyData={historyData}
         isLoading={isHistoryLoading}
         loadError={historyError}
+      />
+      <DoctorLabTestHistoryModal
+        isOpen={isLabHistoryOpen}
+        onClose={() => setIsLabHistoryOpen(false)}
+        historyData={labHistoryData}
+        isLoading={isLabHistoryLoading}
+        loadError={labHistoryError}
       />
     </DoctorPanelLayout>
   );

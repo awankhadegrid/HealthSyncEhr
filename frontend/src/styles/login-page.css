@@ -47,6 +47,13 @@
   border-color: rgba(212, 170, 98, 0.42);
 }
 
+.login-card--laboratory {
+  --card-accent: #7b3fb2;
+  --card-accent-soft: #ab76da;
+  --card-accent-ring: rgba(142, 92, 197, 0.18);
+  border-color: rgba(170, 123, 220, 0.42);
+}
+
 .login-card__header {
   display: flex;
   align-items: center;
@@ -83,7 +90,7 @@
 
 .role-switcher {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 20px;
   padding: 6px;

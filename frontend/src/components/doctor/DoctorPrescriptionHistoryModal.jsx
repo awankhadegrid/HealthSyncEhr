@@ -57,6 +57,8 @@ function DoctorPrescriptionHistoryModal({
           <button className="patient-modal__close" type="button" onClick={onClose}>
             Close
           </button>
+          
+          
         </div>
 
         <div className="patient-modal__body">

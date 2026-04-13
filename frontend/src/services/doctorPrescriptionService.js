@@ -4,6 +4,8 @@ export const DOCTOR_PRESCRIPTION_ENDPOINTS = {
   options: '/api/doctor/prescriptions/options',
   save: (patientId) => `/api/doctor/patients/${patientId}/prescriptions`,
   history: (patientId) => `/api/doctor/patients/${patientId}/previousPrescriptions`,
+  labHistory: (patientId) =>
+    `/api/doctor/patients/${patientId}/previous-lab-tests`,
 };
 
 export async function getPrescriptionOptions() {
@@ -22,6 +24,14 @@ export async function savePatientPrescription(patientId, payload) {
 export async function getPatientPrescriptionHistory(patientId) {
   const response = await api.get(
     DOCTOR_PRESCRIPTION_ENDPOINTS.history(patientId)
+  );
+
+  return response.data;
+}
+
+export async function getPatientPreviousLabTests(patientId) {
+  const response = await api.get(
+    DOCTOR_PRESCRIPTION_ENDPOINTS.labHistory(patientId)
   );
 
   return response.data;

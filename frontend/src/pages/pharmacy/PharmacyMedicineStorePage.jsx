@@ -3,7 +3,6 @@ import PharmacyPanelLayout from '../../components/pharmacy/PharmacyPanelLayout.j
 import {
   addMedicineStoreItemToMaster,
   getMedicineStoreItems,
-  scheduleMedicineStoreSync,
 } from '../../services/medicineStoreService.js';
 
 const FALLBACK_MEDICINES = [
@@ -53,8 +52,6 @@ function PharmacyMedicineStorePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [pageError, setPageError] = useState('');
   const [searchValue, setSearchValue] = useState('');
-  const [syncTime, setSyncTime] = useState('09:00');
-  const [isScheduling, setIsScheduling] = useState(false);
   const [scheduleMessage, setScheduleMessage] = useState('');
   const [selectedMedicine, setSelectedMedicine] = useState(null);
   const [pricePerQuantity, setPricePerQuantity] = useState('');
@@ -115,30 +112,6 @@ function PharmacyMedicineStorePage() {
     );
   }, [medicines, searchValue]);
 
-  const handleScheduleSync = async () => {
-    if (!syncTime) {
-      setPageError('Select a daily time before scheduling the medicine API.');
-      return;
-    }
-
-    setIsScheduling(true);
-    setScheduleMessage('');
-    setPageError('');
-
-    try {
-      const response = await scheduleMedicineStoreSync({ time: syncTime });
-      setScheduleMessage(
-        response?.message || `Medicine sync scheduled daily at ${syncTime}.`
-      );
-    } catch (error) {
-      setPageError(
-        error.response?.data?.message ||
-          'Unable to schedule medicine API sync. Check backend API.'
-      );
-    } finally {
-      setIsScheduling(false);
-    }
-  };
 
   const handleOpenAddModal = (medicine) => {
     setSelectedMedicine(medicine);
@@ -213,26 +186,6 @@ function PharmacyMedicineStorePage() {
             />
           </label>
 
-          <div className="medicine-store-scheduler">
-            <label className="input-group medicine-store-time" htmlFor="medicine-store-time">
-              <span>Daily API Time</span>
-              <input
-                id="medicine-store-time"
-                type="time"
-                value={syncTime}
-                onChange={(event) => setSyncTime(event.target.value)}
-              />
-            </label>
-
-            <button
-              className="panel-action-button pharmacy-master-button medicine-store-scheduler__button"
-              type="button"
-              onClick={handleScheduleSync}
-              disabled={isScheduling}
-            >
-              {isScheduling ? 'Saving...' : 'Set Time'}
-            </button>
-          </div>
         </div>
 
         {scheduleMessage ? (

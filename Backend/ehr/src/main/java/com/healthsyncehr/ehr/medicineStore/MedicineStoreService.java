@@ -16,6 +16,7 @@ public class MedicineStoreService {
     private final RestTemplate restTemplate = new RestTemplate();
 
 
+    @Scheduled(cron = "${cron.expression}")
     public void getAllMedicineFormApi() throws InterruptedException {
             String url = "https://api.fda.gov/drug/label.json?limit=50";
 
@@ -39,21 +40,6 @@ public class MedicineStoreService {
                 }
 
 
-    }
-
-    private String timerTime= "01:00";
-    public void scheduleTimerForApi(String time) {
-        this.timerTime=time;
-    }
-
-
-    @Scheduled(cron = "0 * * * * *")
-    public void runScheduledApi() throws InterruptedException {
-        String currentTime = LocalTime.now().withSecond(0).withNano(0).toString();
-
-        if(currentTime.equals(timerTime)){
-            getAllMedicineFormApi();
-        }
     }
 
 

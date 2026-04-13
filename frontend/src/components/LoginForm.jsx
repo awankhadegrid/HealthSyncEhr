@@ -30,6 +30,15 @@ const ROLE_CONTENT = {
     route: '/pharmacy/dashboard',
     buttonLabel: 'Pharmacy',
   },
+  laboratory: {
+    badge: 'LB',
+    title: 'Laboratory Login',
+    subtitle: 'Manage test orders, sample collection, and lab-result workflows securely.',
+    emailPlaceholder: 'laboratory@healthsync.com',
+    helper: 'Use your laboratory account to review pending tests and publish reports.',
+    route: '/laboratory/dashboard',
+    buttonLabel: 'Laboratory',
+  },
 };
 
 function LoginForm() {
@@ -133,6 +142,13 @@ function LoginForm() {
             onClick={() => handleRoleChange('pharmacy')}
           >
             Pharmacy
+          </button>
+          <button
+            className={`role-switcher__button ${selectedRole === 'laboratory' ? 'is-active' : ''}`}
+            type="button"
+            onClick={() => handleRoleChange('laboratory')}
+          >
+            Laboratory
           </button>
         </div>
 

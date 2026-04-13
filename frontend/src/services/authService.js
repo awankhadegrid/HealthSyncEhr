@@ -4,6 +4,7 @@ const LOGIN_ENDPOINTS = {
   receptionist: '/api/auth/receptionist/login',
   doctor: '/api/auth/doctor/login',
   pharmacy: '/api/auth/pharmacy/login',
+  laboratory: '/api/auth/laboratory/login',
 };
 
 export async function loginByRole(role, payload) {

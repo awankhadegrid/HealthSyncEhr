@@ -15,12 +15,12 @@ public class MedicineController {
     @Autowired
     MedicineStoreService medicineStoreService;
 
-    @PostMapping("/schedule-sync")
-    public Map<String ,String> scheduleTimerForApi(@RequestBody Map<String , String> request){
-         medicineStoreService.scheduleTimerForApi(request.get("time"));
-        return Map.of("message", "Medicine sync scheduled successfully");
-
-    }
+//    @PostMapping("/schedule-sync")
+//    public Map<String ,String> scheduleTimerForApi(@RequestBody Map<String , String> request){
+//         medicineStoreService.scheduleTimerForApi(request.get("time"));
+//        return Map.of("message", "Medicine sync scheduled successfully");
+//
+//    }
 
     @GetMapping("/getAllMedicineFromApi")
     @Operation(summary = "this API use to get medicine form external Api")

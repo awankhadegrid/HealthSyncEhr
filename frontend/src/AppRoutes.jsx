@@ -1,6 +1,9 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import DoctorDashboardPage from './pages/doctor/DoctorDashboardPage.jsx';
 import DoctorPatientSummaryPage from './pages/doctor/DoctorPatientSummaryPage.jsx';
+import LaboratoryAddTestPage from './pages/laboratory/LaboratoryAddTestPage.jsx';
+import LaboratoryAllTestsPage from './pages/laboratory/LaboratoryAllTestsPage.jsx';
+import LaboratoryDashboardPage from './pages/laboratory/LaboratoryDashboardPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import PharmacyDashboardPage from './pages/pharmacy/PharmacyDashboardPage.jsx';
 import PharmacyMedicineMasterPage from './pages/pharmacy/PharmacyMedicineMasterPage.jsx';
@@ -15,6 +18,9 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/doctor/dashboard" element={<DoctorDashboardPage />} />
+        <Route path="/laboratory/dashboard" element={<LaboratoryDashboardPage />} />
+        <Route path="/laboratory/tests/add" element={<LaboratoryAddTestPage />} />
+        <Route path="/laboratory/tests" element={<LaboratoryAllTestsPage />} />
         <Route
           path="/doctor/patients/:patientId/summary"
           element={<DoctorPatientSummaryPage />}
